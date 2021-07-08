@@ -1,0 +1,231 @@
+MMStore web api definitions
+MMStore.postman_collection.json contains sample API calls
+(create an environment with a "token" value to hold the JWT access token from the login call)
+
+Authorization API:
+	POST /api/authorize/login
+		body: {"userEMail":"<email>","userPassword":"<pw>"}
+		Response: 200 OK if valid + access token object
+			{"userEMail": "admin@MMStore.com",
+			"userFirstName": "Store",
+			"userLastName": "Admin",
+			"userIsAdmin": "Y",
+			"accessToken": "eyJ...f0"}
+		Must send "Authorization: Bearer <token>" on subsequent API calls
+
+ 	POST /api/authorize/register
+		body: {"userEMail":"<email>","userPassword":"<pw>","userFirstName": "<name>", "userLastName": "<name>"}
+		other fields in the body are ignored: Active is forced to Y, Admin is forced to N, ID is assigned
+		Response: 200 OK if valid + cookie set + user json object as body
+			{"userEMail": "admin@MMStore.com",
+			"userFirstName": "Store",
+			"userLastName": "Admin",
+			"userIsAdmin": "Y",
+			"accessToken": "eyJ...f0"}
+		Must send "Authorization: Bearer <token>" on subsequent API calls
+
+Users API:
+	GET /api/users/me
+		Response: 200 OK if logged on + user json object as body
+			{"userID": 2,
+			"userEMail": "user@other.com",
+			"userFirstName": "Store2",
+			"UserLastName": "AAUser2",
+			"userIsAdmin": "N",
+			"userIsActive": "Y"}
+
+	GET /api/users/<id> (admin only)
+		Response: 200 OK if valid + user json object as body
+			{"userID": 2,
+			"userEMail": "user@other.com",
+			"userFirstName": "Store2",
+			"UserLastName": "AAUser2",
+			"userIsAdmin": "N",
+			"userIsActive": "Y"}
+
+	PATCH /api/users/<id> (admin only - can not patch self)
+		body: {"userEMail":"<email>","userPassword":"<pw>","userFirstName": "<name>", "userLastName": "<name>","UserIsActive":"Y|N","UserIsAdmin":"Y|N"}
+		if the ID is specified in the body it must match the ID in the URL
+		Response: 200 OK if valid + user json object as body
+			{"userID": 2,
+			"userEMail": "user@other.com",
+			"userFirstName": "Store2",
+			"UserLastName": "AAUser2",
+			"userIsAdmin": "N",
+			"userIsActive": "Y"}
+
+	GET /api/users/list?offset=<int>&pagesize=<int>&search=<target>&sort=name|id (admin only)
+		Default offset=0, pagesize=25, sort=name
+		Response: 200 OK if valid + response json as body
+			{"offset": 0,
+			"pageSize": 25,
+			"totalRecords": 3,
+			"nextPage": "<url>",
+			"prevPage": "<url>",
+			"users": [
+				{"userID": 2,
+				"userEMail": "user@other.com",
+				"userFirstName": "Store2",
+				"UserLastName": "AAUser2",
+				"userIsAdmin": "N",
+				"userIsActive": "Y"},
+				<etc>
+			]}
+
+Categories API:
+	GET /api/categories/list?sort=name|id&offset=0&pagesize=25
+		Default: offset=0, pagesize=25, sort=name
+		Response: 200 OK if valid + response json as body
+			{"offset": 0,
+			"pageSize": 25,
+			"totalRecords": 3,
+			"nextPage": "<url>",
+			"prevPage": "<url>",
+			"categories": [
+				{"categoryID": 1,
+				"categoryName": "first category",
+				"categoryInfo": "First sample category",
+				"categoryIsActive": "Y"},
+				<etc>
+			]}
+
+
+	GET /api/categories/<id|name>
+		Response: 200 OK if valid + response json as body
+			{"categoryID": 1,
+			"categoryName": "first category",
+			"categoryInfo": "First sample category",
+			"categoryIsActive": "Y"}
+
+
+	POST /api/categories (admin only)
+		Body: {"categoryName":"<name>","categoryInfo":"<text>"}
+		other fields in the body are ignored: Active is forced to Y, ID is assigned
+		Response: 200 OK if valid + response json as body
+			{"categoryID": 1,
+			"categoryName": "first category",
+			"categoryInfo": "First sample category",
+			"categoryIsActive": "Y"}
+
+	PATCH /api/categories/id (admin only)
+		Body: {"categoryName":"<name>","categoryInfo":"<text>","categoryIsActive":"Y|N"}
+		if the ID is specified in the body it must match the ID in the URL
+		Response: 200 OK if valid + response json as body
+			{"categoryID": 1,
+			"categoryName": "first category",
+			"categoryInfo": "First sample category",
+			"categoryIsActive": "Y"}
+
+
+Products API:
+	GET /api/products/<id|name|code>
+		Response: 200 OK if valid + response json as body
+			{"productID": 1,
+			"categoryID": 1,
+			"productCode": "1766B2F5-ABB4-4BDE-9A86-0D87D7CE27FF",
+			"productName": "First Product",
+			"productInfo": "First Sample Product",
+			"productPrice": 11.1100,
+			"productIsActive": "Y"}
+
+	GET /api/products/list?search=<search>&categoryid=<id>&offset=0&pagesize=25&sort=name|id|code
+		Default: offset=0, pagesize=25, no category (get all), no search (get all), sort=name
+		Response: 200 OK if valid + response json as body (the category name is included in the product records for this result)
+			{"offset": 2,
+			"pageSize": 2,
+			"totalRecords": 6,
+			"nextPage": "<url>",
+			"prevPage": "<url>",
+			"products": [
+				{"productID": 1,
+				"categoryID": 1,
+				"productCode": "1766B2F5-ABB4-4BDE-9A86-0D87D7CE27FF",
+				"productName": "First Product",
+				"productInfo": "First Sample Product",
+				"productPrice": 11.1100,
+				"productIsActive": "Y",
+				"categoryName": "first category"},
+				<etc>
+			]}
+
+	POST /api/products (admin only)
+		Body: {"categoryID":"<id>","productCode":"<code>","productName":"<name>","productInfo":"<text>","productPrice":price}
+		other fields in the body are ignored: Active is forced to Y, ID is assigned
+		Response: 200 OK if valid + response json as body
+			{"productID": 1,
+			"categoryID": 1,
+			"productCode": "1766B2F5-ABB4-4BDE-9A86-0D87D7CE27FF",
+			"productName": "First Product",
+			"productInfo": "First Sample Product",
+			"productPrice": 11.1100,
+			"productIsActive": "Y"}
+
+Cart API:
+	POST /api/cart
+		Body: {"productID":"<id>","quantity":<number>}
+		The UserID field must either not be sent or must match the current user; quantity will update existing rows; 0 or null will delete item
+		Response: 200 OK if valid + response json as body
+				 {"productID": 2,
+				"quantity": 42}
+
+	GET /api/cart?productid=<id>&userid=<id>
+		The ProductID is optional; if missing or 0 then all items are returned
+		The UserID is optional; if sent by a non-admin it must match the current user's ID
+		Response: 200 OK + response json as body
+			{"cart": [
+				 {"userID": 1,
+				"productID": 2,
+				"quantity": 42},
+				<etc>
+			]}
+
+	GET /api/cart/submit&UserID=<id>
+		The UserID field must either not be sent or must match the current user
+		Response: 200 OK if valid + response json as body
+			{"orderID": 11,
+			"userID": 1,
+			"orderDate": "2021-06-27T19:35:52.1831883Z",
+			"orderStatus": "Processing"
+			}
+
+
+Orders API:
+
+	GET /api/orders/<order>&UserID=<id>
+		The UserID field must either not be sent or must match the current user
+		Response: 200 OK if valid + response json as body
+			{"orderID": 11,
+			"userID": 1,
+			"orderDate": "2021-06-27T19:35:52.1831883Z",
+			"orderStatus": "Processing"
+			}
+
+	GET /api/orders?offset=0&pagesize=25&status=processing,shipped,complete,cancelled&userid=<id (admin only)>
+		The UserID field must either not be sent or must match the current user
+		Response: 200 OK if valid + response json as body
+			{"offset": 0,
+			"pageSize": 25,
+			"totalRecords": 1,
+			"nextPage": "<url>",
+			"prevPage": "<url>",
+			"orders": [{
+				"orderID": 11,
+				"userID": 1,
+				"orderDate": "2021-06-27T19:35:52.183",
+				"orderStatus": "Processing"
+				},
+				<etc>
+			]}
+
+	GET /api/orders/<id>/details
+		Response: 200 OK if valid + response json as body
+			{"details": [
+       				{"orderID": 11,
+				"productID": 1,
+				"productName": "First Product",
+				"productCode": "1766B2F5-ABB4-4BDE-9A86-0D87D7CE27FF",
+				"productPrice": 11.1100,
+				"quantity": 2},
+				<etc>
+			]}
+

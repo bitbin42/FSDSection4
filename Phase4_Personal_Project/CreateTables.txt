@@ -1,0 +1,48 @@
+--This creates the tables and initiial users;  if you restore the DB backup from MMStore_empty_db.zip then this is not needed.
+--Users created: adminpw@mmstore.com/adminpw and user@other.com/userpw
+
+
+Create DataBase MMStore;
+
+USE [MMStore] -- first we create a SQL logon for the backend service to use
+CREATE LOGIN [MMStoreWebUser] WITH PASSWORD=N'MMSWU88', DEFAULT_DATABASE=[MMStore], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+USE [master]
+CREATE USER [MMStore] FOR LOGIN [MMStore] WITH DEFAULT_SCHEMA=[dbo]
+ALTER ROLE [db_datareader] ADD MEMBER [MMStoreWebUser]
+ALTER ROLE [db_datawriter] ADD MEMBER [MMStoreWebUser]
+
+-- create the tables we need
+Create Table MMSUsers (UserID int identity not null primary key,UserEMail varchar(128),UserPassword varchar(64),UserFirstName varchar(64),UserLastName varchar(64),UserIsAdmin char(1),UserIsActive char(1));
+Create Table MMSCategories (CategoryID int identity not null primary key,CategoryName varchar(64),CategoryInfo varchar(512),CategoryIsActive char(1));
+Create Table MMSProducts (ProductID int identity not null primary key,ProductCode varchar(40),CategoryID int,ProductName varchar(64),ProductInfo varchar(512),ProductPrice money,ProductIsActive char(1));
+Create Table MMSCarts (UserID int,ProductID int,Quantity int);
+Create Table MMSOrders (OrderID int identity not null primary key,UserID int,OrderDate datetime,OrderStatus varchar(32));
+Create Table MMSOrderDetails (OrderID int, ProductID int,OrderQuantity int,OrderPrice money);
+
+-- create initial admin and user logins
+insert into mmSusers (useremail,userpassword,userfirstname,userlastname,userisadmin,userisactive)
+values ('admin@MMStore.com','YWRtaW5wdw','Store','Admin','Y','Y'); -- PW=adminpw
+insert into mmSusers (useremail,userpassword,userfirstname,userlastname,userisadmin,userisactive)
+values ('user@other.com','dXNlcnB3','Store','User','N','Y'); -- PW=userpw
+
+-- create a few categories
+insert into MMSCategories (CategoryName,CategoryInfo,CategoryIsActive) values ('first category','First sample category','Y');
+insert into MMSCategories (CategoryName,CategoryInfo,CategoryIsActive) values ('second category','Second sample category','Y');
+insert into MMSCategories (CategoryName,CategoryInfo,CategoryIsActive) values ('third category','Third sample category','Y');
+
+-- and a few products n each category
+insert into MMSProducts (ProductCode,CategoryID,ProductName,ProductInfo,ProductPrice,ProductIsActive)
+values (convert(varchar(40),NEWID()),1,'First Product','First Sample Product',11.11,'Y');
+insert into MMSProducts (ProductCode,CategoryID,ProductName,ProductInfo,ProductPrice,ProductIsActive)
+values (convert(varchar(40),NEWID()),1,'Second Product','Second Sample Product',22.22,'Y');
+insert into MMSProducts (ProductCode,CategoryID,ProductName,ProductInfo,ProductPrice,ProductIsActive)
+values (convert(varchar(40),NEWID()),1,'First Product','Third Sample Product',33.33,'Y');
+
+insert into MMSProducts (ProductCode,CategoryID,ProductName,ProductInfo,ProductPrice,ProductIsActive)
+values (convert(varchar(40),NEWID()),2,'Fourth Product','Fourth Sample Product',44.44,'Y');
+insert into MMSProducts (ProductCode,CategoryID,ProductName,ProductInfo,ProductPrice,ProductIsActive)
+values (convert(varchar(40),NEWID()),2,'Fifth Product','Fifth Sample Product',55.55,'Y');
+
+insert into MMSProducts (ProductCode,CategoryID,ProductName,ProductInfo,ProductPrice,ProductIsActive)
+values (convert(varchar(40),NEWID()),3,'Sixth Product','Sixth Sample Product',66.66,'Y');
+

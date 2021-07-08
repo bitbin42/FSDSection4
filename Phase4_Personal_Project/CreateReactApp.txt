@@ -1,0 +1,6 @@
+cd Phase4ProjectB
+npx create-react-app mmstoreclient
+
+cd mmstoreclient
+npm install react-router-dom
+npm start
