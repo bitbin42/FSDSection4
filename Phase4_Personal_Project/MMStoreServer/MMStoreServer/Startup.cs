@@ -32,7 +32,7 @@ namespace MMStoreServer {
               IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))};}); 
     services.AddControllers().AddJsonOptions(options => {options.JsonSerializerOptions.IgnoreNullValues = true;
                                                         options.JsonSerializerOptions.MaxDepth=0;});
-
+    services.AddCors(c => {c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());});
     services.Add(new ServiceDescriptor(typeof(MMStoreServer.Repositories.IMMStoreRepository), typeof(MMStoreServer.Repositories.MMStoreRepository), ServiceLifetime.Scoped));
     services.AddDbContext<MMStoreServer.Repositories.MMStoreDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MMStoreDB")));
     //services.AddSwaggerGen(c => {
@@ -59,6 +59,8 @@ namespace MMStoreServer {
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());    
+    
     //app.UseCors("LocalHostPolicy"); // allow localhost - must call beteeen UseRouting and UseEndpoints
       
     app.UseEndpoints(endpoints => endpoints.MapControllers());

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Consumer, Context} from './context';
+import {Context} from './context';
 import {apiBaseURL,apiFetchOptions} from './api';
 import {Link} from "react-router-dom";
 

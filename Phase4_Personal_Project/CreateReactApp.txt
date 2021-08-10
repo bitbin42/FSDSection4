@@ -4,3 +4,6 @@ npx create-react-app mmstoreclient
 cd mmstoreclient
 npm install react-router-dom
 npm start
+
+create package:
+npm run build
