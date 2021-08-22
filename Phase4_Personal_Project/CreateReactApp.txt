@@ -1,9 +1,9 @@
-cd Phase4ProjectB
+cd Phase4_Personal_Project
 npx create-react-app mmstoreclient
 
 cd mmstoreclient
 npm install react-router-dom
 npm start
 
-create package:
+create package for deployment:
 npm run build

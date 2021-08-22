@@ -1,5 +1,5 @@
 --This creates the tables and initiial users;  if you restore the DB backup from MMStore_empty_db.zip then this is not needed.
---Users created: adminpw@mmstore.com/adminpw and user@other.com/userpw
+--Users created: adminpw@mmstore.com (password adminpw) and user@other.com (password userpw)
 
 
 Create DataBase MMStore;
