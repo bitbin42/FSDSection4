@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Provider} from './context';
 import Header from './Header';
-import Navbar from './Navbar';
+import Menubar from './Menubar';
 import Footer from './Footer';
 import Welcome from './Welcome';
 import {Logon,Logoff} from './Logon';
@@ -24,7 +24,7 @@ class App extends Component {
     return (
       <Provider>
         <Header />
-        <Navbar />
+        <Menubar />
         <div id='BodyBlock'>
           <Router>
             <Switch>

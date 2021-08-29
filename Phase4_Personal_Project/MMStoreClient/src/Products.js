@@ -65,15 +65,15 @@ export default class Products extends Component {
           return (
             <div className="MainBody">
               <div className="container-fluid">
-                Category: <select id='catselect' className='downright' onChange={(e) => this.categorySelected(e.target.value)}>
+                <div className="boxed">Category: <select id='catselect' className='downright' onChange={(e) => this.categorySelected(e.target.value)}>
                   <option value='0'>All</option>
                   {this.state.categoryresp.map(c => <option key={c.categoryID} value={c.categoryID}>{c.categoryName}
                             {(isadmin && c.categoryIsActive!=='Y')?' [inactive]':''}</option>)}
-                  </select>
-                Search: <input id='searchTarget' type='text' />
+                  </select></div>
+                <div className="boxed">Search: <input id='searchTarget' type='text' />
                 <button id='doSearch' className='downright'
-                  onClick={(e) => this.searchSelected(document.getElementById('searchTarget').value)}>Find</button>
-                Products {prodfrom} to {prodto} of {this.state.productresp.totalRecords}
+                  onClick={(e) => this.searchSelected(document.getElementById('searchTarget').value)}>Find</button></div>
+                <div className="boxed">Products {prodfrom} to {prodto} of {this.state.productresp.totalRecords}</div>
               </div>
               <div className='container-fluid'>
                 {!Array.isArray(this.state.productresp.products)?null:
