@@ -13,9 +13,17 @@ namespace MMSTests {
   Assert.That(oResp.TotalRecords,Is.InRange(450,550));
   Assert.That(oResp.NextPage,Is.EqualTo("testbase?offset=150&pagesize=50"));
   Assert.NotNull(oResp.PrevPage);
-  oResp=new MMStoreServer.Models.MMSPagedResponse(0,50,500,"testbase");
+  }
+
+  [Test]
+  public void Test2() {
+  MMStoreServer.Models.MMSPagedResponse oResp=new MMStoreServer.Models.MMSPagedResponse(0,50,500,"testbase");
   Assert.That(oResp.PrevPage,Is.Null);
-  oResp=new MMStoreServer.Models.MMSPagedResponse(501,50,500,"testbase");
+  }
+
+  [Test]
+  public void Test3() {
+  MMStoreServer.Models.MMSPagedResponse oResp=new MMStoreServer.Models.MMSPagedResponse(501,50,500,"testbase");
   Assert.IsNull(oResp.NextPage); // alternate syntax
   }
 
